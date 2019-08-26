@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>x-conver</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .wrap {
+      height: 95vh;
+      /* background-color: red; */
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .left {
+      background-color: red;
+      width: 49%;
+      height: 100%;
+    }
+
+    .right {
+      background-color: blue;
+      width: 49%;
+      height: 100%;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      outline: none;
+      resize: none;
+      font-size: 1em;
+      border-color: #CCCCCC;
+    }
+
+    .wrap {
+      padding: 1% 2% 2% 1%;
+    }
+
+    #wrap::-webkit-scrollbar {
+      display: none;
+    }
+
+    h2 {
+      text-align: center;
+      line-height: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- <h2>json conver to property</h2> -->
+
+  <div class="wrap" id="wrap" oncontextmenu="showRightClickMenu()">
+    <div class="left">
+      <textarea id="input">{"name":"张三", "age":20, "bool": true, "arr": [], "dic":{"key":"value"}}</textarea>
+    </div>
+    <div class="right">
+      <textarea id="output" readonly></textarea>
+    </div>
+  </div>
+<script>
+  function showRightClickMenu() {
+      console.log("123");
+      const {ipcRenderer} = require('electron')
+      ipcRenderer.send('sigShowRightClickMenu');
+  }
+</script>
+
+
+
+
+    <script>
+
+      var input = document.getElementById("input");
+      var output = document.getElementById("output");
+
+      input.addEventListener('input', function () {
+        conver();
+      });
+
+      function conver() {
+
+        var obj = JSON.parse(input.value);
+        var dicArr = [];
+        var result = "";
+
+        Object.keys(obj).forEach(function (key) {
+
+          var type = Object.prototype.toString.call(obj[key]);
+
+          switch (type) {
+            case '[object String]': {
+              console.log("string");
+              var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
+              result += temp;
+              break;
+            }
+
+            case '[object Number]': {
+              console.log("number");
+              var temp = "@property (strong, nonatomic) NSNumber *" + key + ";" + "\n";
+              result += temp;
+              break;
+            }
+
+            case '[object Boolean]': {
+              console.log("bool");
+              var temp = "@property (assign, nonatomic) BOOL " + key + ";" + "\n";
+              result += temp;
+              break;
+            }
+
+            case '[object Array]': {
+              console.log("array");
+              var temp = "@property (strong, nonatomic) NSArray *" + key + ";" + "\n";
+              result += temp;
+              break;
+            }
+
+            case '[object Object]': {
+              console.log("object");
+              var temp = "@property (strong, nonatomic) NSDictionary *" + key + ";" + "\n";
+              result += temp;
+              dicArr.push(obj[key]);
+              break;
+            }
+
+            case '[object Null]': {
+              console.log("object");
+              var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
+              result += temp;
+              dicArr.push(obj[key]);
+              break;
+            }
+
+            default: {
+
+            }
+          }
+        })
+        output.value = result;
+      }
+
+      window.onload = function () {
+        conver();
+      }
+
+    </script>
+
+</body>
+
+</html>
