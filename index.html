@@ -66,94 +66,94 @@
       <textarea id="output" readonly></textarea>
     </div>
   </div>
-<script>
-  function showRightClickMenu() {
+  <script>
+    function showRightClickMenu() {
       console.log("123");
-      const {ipcRenderer} = require('electron')
+      const { ipcRenderer } = require('electron')
       ipcRenderer.send('sigShowRightClickMenu');
-  }
-</script>
+    }
+  </script>
 
 
 
 
-    <script>
+  <script>
 
-      var input = document.getElementById("input");
-      var output = document.getElementById("output");
+    var input = document.getElementById("input");
+    var output = document.getElementById("output");
 
-      input.addEventListener('input', function () {
-        conver();
-      });
+    input.addEventListener('input', function () {
+      conver();
+    });
 
-      function conver() {
+    function conver() {
 
-        var obj = JSON.parse(input.value);
-        var dicArr = [];
-        var result = "";
+      var obj = JSON.parse(input.value);
+      var dicArr = [];
+      var result = "";
 
-        Object.keys(obj).forEach(function (key) {
+      Object.keys(obj).forEach(function (key) {
 
-          var type = Object.prototype.toString.call(obj[key]);
+        var type = Object.prototype.toString.call(obj[key]);
 
-          switch (type) {
-            case '[object String]': {
-              console.log("string");
-              var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
-              result += temp;
-              break;
-            }
-
-            case '[object Number]': {
-              console.log("number");
-              var temp = "@property (strong, nonatomic) NSNumber *" + key + ";" + "\n";
-              result += temp;
-              break;
-            }
-
-            case '[object Boolean]': {
-              console.log("bool");
-              var temp = "@property (assign, nonatomic) BOOL " + key + ";" + "\n";
-              result += temp;
-              break;
-            }
-
-            case '[object Array]': {
-              console.log("array");
-              var temp = "@property (strong, nonatomic) NSArray *" + key + ";" + "\n";
-              result += temp;
-              break;
-            }
-
-            case '[object Object]': {
-              console.log("object");
-              var temp = "@property (strong, nonatomic) NSDictionary *" + key + ";" + "\n";
-              result += temp;
-              dicArr.push(obj[key]);
-              break;
-            }
-
-            case '[object Null]': {
-              console.log("object");
-              var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
-              result += temp;
-              dicArr.push(obj[key]);
-              break;
-            }
-
-            default: {
-
-            }
+        switch (type) {
+          case '[object String]': {
+            console.log("string");
+            var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
+            result += temp;
+            break;
           }
-        })
-        output.value = result;
-      }
 
-      window.onload = function () {
-        conver();
-      }
+          case '[object Number]': {
+            console.log("number");
+            var temp = "@property (strong, nonatomic) NSNumber *" + key + ";" + "\n";
+            result += temp;
+            break;
+          }
 
-    </script>
+          case '[object Boolean]': {
+            console.log("bool");
+            var temp = "@property (assign, nonatomic) BOOL " + key + ";" + "\n";
+            result += temp;
+            break;
+          }
+
+          case '[object Array]': {
+            console.log("array");
+            var temp = "@property (strong, nonatomic) NSArray *" + key + ";" + "\n";
+            result += temp;
+            break;
+          }
+
+          case '[object Object]': {
+            console.log("object");
+            var temp = "@property (strong, nonatomic) NSDictionary *" + key + ";" + "\n";
+            result += temp;
+            dicArr.push(obj[key]);
+            break;
+          }
+
+          case '[object Null]': {
+            console.log("object");
+            var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
+            result += temp;
+            dicArr.push(obj[key]);
+            break;
+          }
+
+          default: {
+
+          }
+        }
+      })
+      output.value = result;
+    }
+
+    window.onload = function () {
+      conver();
+    }
+
+  </script>
 
 </body>
 
