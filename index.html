@@ -173,14 +173,8 @@
                         header = "\n@interface " + cls + " : NSObject\n";
                         body = dic1[cls]
                         footer = "@end\n"
-
                         result += header += body += footer
-
-                        //
-                        // console.log(cls);
-                        // console.log(properties);
                     }
-                    // result += dicArr[index]
                 }
                 output.value = result;
             }
