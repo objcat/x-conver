@@ -1,217 +1,223 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="UTF-8">
-        <title>x-conver</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-            }
+	<head>
+		<meta charset="UTF-8">
+		<title>x-conver</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
 
-            .wrap {
-                height: 95vh;
-                display: flex;
-                justify-content: space-between;
-            }
+			.wrap {
+				height: 95vh;
+				display: flex;
+				justify-content: space-between;
+			}
 
-            .left {
-                /* background-color: red; */
-                width: 49%;
-                height: 100%;
-            }
+			.left {
+				/* background-color: red; */
+				width: 49%;
+				height: 100%;
+			}
 
-            .right {
-                /* background-color: blue; */
-                width: 49%;
-                height: 100%;
-            }
+			.right {
+				/* background-color: blue; */
+				width: 49%;
+				height: 100%;
+			}
 
-            textarea {
-                width: 100%;
-                height: 100%;
-                outline: none;
-                resize: none;
-                font-size: 1em;
-                border-color: #CCCCCC;
-                padding: 5px;
-                word-break: break-all;
-            }
+			textarea {
+				width: 100%;
+				height: 100%;
+				outline: none;
+				resize: none;
+				font-size: 1em;
+				border-color: #CCCCCC;
+				padding: 5px;
+				word-break: break-all;
+			}
 
-            .wrap {
-                padding: 1% 2% 2% 1%;
-            }
+			.wrap {
+				padding: 1% 2% 2% 1%;
+			}
 
-            #wrap::-webkit-scrollbar {
-                display: none;
-            }
+			#wrap::-webkit-scrollbar {
+				display: none;
+			}
 
-            h2 {
-                text-align: center;
-                line-height: 5px;
-            }
-        </style>
-    </head>
+			h2 {
+				text-align: center;
+				line-height: 5px;
+			}
+		</style>
+	</head>
 
-    <body>
+	<body>
 
-        <!-- <h2>json conver to property</h2> -->
+		<!-- <h2>json conver to property</h2> -->
 
-        <div class="wrap" id="wrap" oncontextmenu="showRightClickMenu()">
-            <div class="left">
-                <textarea id="input">{"service":{"name_":"DMSGestureRecognition","service_spec_version":"1.00","service_interface":[{"interface_type":"Event","interface_description_index":"TEST.FFF1","interface_id_":"0x8001","output":[{"min_value":"","output_name":"GestureInstructions","output_description_index":"TEST.IN01","max_value":"","value_semanteme":[{"value_":"0x0","text__":"NoGesture;"},{"value_":"0x1","text__":"Victory；"},{"value_":"0x2","text__":"ThumbsUp；"},{"value_":"0x3","text__":"Hello；"},{"value_":"0x4","text__":"FingerHeart；"},{"value_":"0x5","text__":"OK；"},{"value_":"0x6","text__":"UP；"},{"value_":"0x7","text__":"Down；"},{"value_":"0x8","text__":"Left;"},{"value_":"0x9","text__":"Right"}],"output_number":"01","output_type":"Uint8"}],"interface_name":"DMSGestureInstructions"}],"service_instance_id":"3","service_id":"0xB032","version":"0x01","create_at":"TEST.NOW","service_description_index":"TEST.000A"}}
+		<div class="wrap" id="wrap" oncontextmenu="showRightClickMenu()">
+			<div class="left">
+				<textarea id="input">{"service":{"name_":"DMSGestureRecognition","service_spec_version":"1.00","service_interface":[{"interface_type":"Event","interface_description_index":"TEST.FFF1","interface_id_":"0x8001","output":[{"min_value":"","output_name":"GestureInstructions","output_description_index":"TEST.IN01","max_value":"","value_semanteme":[{"value_":"0x0","text__":"NoGesture;"},{"value_":"0x1","text__":"Victory；"},{"value_":"0x2","text__":"ThumbsUp；"},{"value_":"0x3","text__":"Hello；"},{"value_":"0x4","text__":"FingerHeart；"},{"value_":"0x5","text__":"OK；"},{"value_":"0x6","text__":"UP；"},{"value_":"0x7","text__":"Down；"},{"value_":"0x8","text__":"Left;"},{"value_":"0x9","text__":"Right"}],"output_number":"01","output_type":"Uint8"}],"interface_name":"DMSGestureInstructions"}],"service_instance_id":"3","service_id":"0xB032","version":"0x01","create_at":"TEST.NOW","service_description_index":"TEST.000A"}}
                 </textarea>
-            </div>
-            <div class="right">
-                <textarea id="output" readonly></textarea>
-            </div>
-        </div>
+			</div>
+			<div class="right">
+				<textarea id="output" readonly></textarea>
+			</div>
+		</div>
 
-        <script>
-
-            var input = document.getElementById("input");
-            var output = document.getElementById("output");
+		<script>
+			var input = document.getElementById("input");
+			var output = document.getElementById("output");
 			// 保存属性中的class
-            var dicArr = [];
+			var dicArr = [];
 
-            input.addEventListener('input', function (e) {
-                dicArr = [];
-                // 解析
-                try {
-                    var obj = JSON.parse(input.value)
-                    result = conver(obj);
-                } catch (e) {
-                    console.log(e)
-                }
-                // 组合
-                collect(result);
-            });
+			input.addEventListener('input', function(e) {
+				dicArr = [];
+				// 解析
+				try {
+					var obj = JSON.parse(input.value)
+					result = conver(obj);
+				} catch (e) {
+					console.log(e)
+				}
+				// 组合
+				collect(result);
+			});
 
-            function conver(obj) {
+			function conver(obj) {
 
-                var result = "";
+				var result = "";
 
-                Object.keys(obj).forEach(function (key) {
+				Object.keys(obj).forEach(function(key) {
 
-                    var type = Object.prototype.toString.call(obj[key]);
+					var type = Object.prototype.toString.call(obj[key]);
 
-                    switch (type) {
-                        case '[object String]': {
-                            var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
-                            result += temp;
-                            break;
-                        }
+					switch (type) {
+						case '[object String]':
+							{
+								var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
+								result += temp;
+								break;
+							}
 
-                        case '[object Number]': {
-                            var temp = "@property (strong, nonatomic) NSNumber *" + key + ";" + "\n";
-                            result += temp;
-                            break;
-                        }
+						case '[object Number]':
+							{
+								var temp = "@property (strong, nonatomic) NSNumber *" + key + ";" + "\n";
+								result += temp;
+								break;
+							}
 
-                        case '[object Boolean]': {
-                            var temp = "@property (assign, nonatomic) BOOL " + key + ";" + "\n";
-                            result += temp;
-                            break;
-                        }
+						case '[object Boolean]':
+							{
+								var temp = "@property (assign, nonatomic) BOOL " + key + ";" + "\n";
+								result += temp;
+								break;
+							}
 
-                        case '[object Array]': {
-                            var temp = "@property (strong, nonatomic) NSArray *" + key + ";" + "\n";
-                            result += temp;
-                            var arr = obj[key];
-                            if (arr.length > 0) {
-								var varType = Object.prototype.toString.call(arr[0]);
-								// 如果是对象才进行解析
-								if(varType == '[object Object]') {
-									analyticalObj(key, arr[0]);
+						case '[object Array]':
+							{
+								var temp = "@property (strong, nonatomic) NSArray *" + key + ";" + "\n";
+								result += temp;
+								var arr = obj[key];
+								// 如果是数组就取其中的第一个进行解析
+								if (arr.length > 0) {
+									var varType = Object.prototype.toString.call(arr[0]);
+									// 如果是对象才进行解析
+									if (varType == '[object Object]') {
+										analyticalObj(key, arr[0]);
+									}
 								}
-                            }
-                            break;
-                        }
+								break;
+							}
 
-                        case '[object Object]': {
-                            // 首先拼接带对象类型的json
-                            var cls = first_word_uppercase(key);
-                            var temp = "@property (strong, nonatomic) " + cls + " *" + key + ";" + "\n";
-                            result += temp;
-                            analyticalObj(key, obj[key])
-                            break;
-                        }
+						case '[object Object]':
+							{
+								// 获取类名
+								var cls = first_word_uppercase(key);
+								var temp = "@property (strong, nonatomic) " + cls + " *" + key + ";" + "\n";
+								result += temp;
+								analyticalObj(key, obj[key])
+								break;
+							}
 
-                        case '[object Null]': {
-                            console.log("object Null");
-                            var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
-                            result += temp;
-                            break;
-                        }
+						case '[object Null]':
+							{
+								// 如果是空类型默认字符串
+								var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
+								result += temp;
+								break;
+							}
 
-                        default: {
+						default:
+							{
+								console.log("键:" + key + " 对应的值是未知类型");
+							}
+					}
+				})
 
-                        }
-                    }
-                })
+				return result;
+			}
 
-                return result;
-            }
+			window.onload = function() {
+				result = conver(JSON.parse(input.value));
+				collect(result)
+			}
 
-            window.onload = function () {
-                result = conver(JSON.parse(input.value));
-                collect(result)
-            }
-
-            function collect(result) {
-                dicArr = dicArr.reverse()
-                for (var index in dicArr) {
-                    var dic1 = dicArr[index]
-                    for (var cls in dic1) {
-                        // 构建对象字符串
-                        header = "\n@interface " + cls + " : NSObject\n";
-                        body = dic1[cls]
-                        footer = "@end\n"
-                        result += header += body += footer
-                    }
-                }
-                output.value = result;
-            }
+			function collect(result) {
+				dicArr = dicArr.reverse()
+				for (var index in dicArr) {
+					var dic1 = dicArr[index]
+					for (var cls in dic1) {
+						// 构建对象字符串
+						header = "\n@interface " + cls + " : NSObject\n";
+						body = dic1[cls]
+						footer = "@end\n"
+						result += header += body += footer
+					}
+				}
+				output.value = result;
+			}
 
 			// 解析对象
-            function analyticalObj(key, obj) {
-                var cls = first_word_uppercase(key);
-                var clsDic = {};
-                clsDic[cls] = conver(obj);
-                dicArr.push(clsDic);
-            }
+			function analyticalObj(key, obj) {
+				var cls = first_word_uppercase(key);
+				var clsDic = {};
+				clsDic[cls] = conver(obj);
+				dicArr.push(clsDic);
+			}
 
-            // 组装类名
-            function first_word_uppercase(str) {
-                var result = "";
+			// 组装类名
+			function first_word_uppercase(str) {
+				var result = "";
 				// 如果变量包含下划线
-                if (str.indexOf("_") != -1) {
-                    var arr = str.split("_");
-                    if (arr.length == 2) {
-                       var first = first_word_uppercase(arr[0]);
-                       var last = first_word_uppercase(arr[1]);
-                       result += first += last;
-                       return result;
-                    }
-                    return str;
-                } else {
+				if (str.indexOf("_") != -1) {
+					var arr = str.split("_");
+					if (arr.length == 2) {
+						var first = first_word_uppercase(arr[0]);
+						var last = first_word_uppercase(arr[1]);
+						result += first += last;
+						return result;
+					}
+					return str;
+				} else {
 					// 变量首字母大写
-                    var arr = str.split("");
-                    for (var index in arr) {
-                        var value = arr[index];
-                        if (index == 0) {
-                            result += value.toUpperCase();
-                        } else {
-                            result += value;
-                        }
-                    }
-                    return result;
-                }
-            }
+					var arr = str.split("");
+					for (var index in arr) {
+						var value = arr[index];
+						if (index == 0) {
+							result += value.toUpperCase();
+						} else {
+							result += value;
+						}
+					}
+					return result;
+				}
+			}
+		</script>
 
-        </script>
-
-    </body>
+	</body>
 
 </html>
