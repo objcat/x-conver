@@ -67,18 +67,12 @@
                 <textarea id="output" readonly></textarea>
             </div>
         </div>
-        <script>
-            function showRightClickMenu() {
-                console.log("123");
-                const {ipcRenderer} = require('electron')
-                ipcRenderer.send('sigShowRightClickMenu');
-            }
-        </script>
 
         <script>
 
             var input = document.getElementById("input");
             var output = document.getElementById("output");
+			// 保存属性中的class
             var dicArr = [];
 
             input.addEventListener('input', function (e) {
@@ -176,6 +170,7 @@
                 output.value = result;
             }
 
+			// 解析对象
             function analyticalObj(key, obj) {
                 var cls = first_word_uppercase(key);
                 var clsDic = {};
@@ -183,9 +178,10 @@
                 dicArr.push(clsDic);
             }
 
-            // 首字母大写
+            // 组装类名
             function first_word_uppercase(str) {
                 var result = "";
+				// 如果变量包含下划线
                 if (str.indexOf("_") != -1) {
                     var arr = str.split("_");
                     if (arr.length == 2) {
@@ -196,8 +192,8 @@
                     }
                     return str;
                 } else {
+					// 变量首字母大写
                     var arr = str.split("");
-
                     for (var index in arr) {
                         var value = arr[index];
                         if (index == 0) {
