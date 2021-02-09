@@ -120,7 +120,11 @@
                             result += temp;
                             var arr = obj[key];
                             if (arr.length > 0) {
-                                analyticalObj(key, arr[0]);
+								var varType = Object.prototype.toString.call(arr[0]);
+								// 如果是对象才进行解析
+								if(varType == '[object Object]') {
+									analyticalObj(key, arr[0]);
+								}
                             }
                             break;
                         }
