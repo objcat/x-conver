@@ -1,160 +1,207 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <meta charset="UTF-8">
-  <title>x-conver</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
+    <head>
+        <meta charset="UTF-8">
+        <title>x-conver</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
 
-    .wrap {
-      height: 95vh;
-      display: flex;
-      justify-content: space-between;
-    }
+            .wrap {
+                height: 95vh;
+                display: flex;
+                justify-content: space-between;
+            }
 
-    .left {
-      /* background-color: red; */
-      width: 49%;
-      height: 100%;
-    }
+            .left {
+                /* background-color: red; */
+                width: 49%;
+                height: 100%;
+            }
 
-    .right {
-      /* background-color: blue; */
-      width: 49%;
-      height: 100%;
-    }
+            .right {
+                /* background-color: blue; */
+                width: 49%;
+                height: 100%;
+            }
 
-    textarea {
-      width: 100%;
-      height: 100%;
-      outline: none;
-      resize: none;
-      font-size: 1em;
-      border-color: #CCCCCC;
-      padding: 5px;
-      word-break: break-all;
-    }
+            textarea {
+                width: 100%;
+                height: 100%;
+                outline: none;
+                resize: none;
+                font-size: 1em;
+                border-color: #CCCCCC;
+                padding: 5px;
+                word-break: break-all;
+            }
 
-    .wrap {
-      padding: 1% 2% 2% 1%;
-    }
+            .wrap {
+                padding: 1% 2% 2% 1%;
+            }
 
-    #wrap::-webkit-scrollbar {
-      display: none;
-    }
+            #wrap::-webkit-scrollbar {
+                display: none;
+            }
 
-    h2 {
-      text-align: center;
-      line-height: 5px;
-    }
-  </style>
-</head>
+            h2 {
+                text-align: center;
+                line-height: 5px;
+            }
+        </style>
+    </head>
 
-<body>
+    <body>
 
-  <!-- <h2>json conver to property</h2> -->
+        <!-- <h2>json conver to property</h2> -->
 
-  <div class="wrap" id="wrap" oncontextmenu="showRightClickMenu()">
-    <div class="left">
-      <textarea id="input">{"name":"张三", "age":20, "bool": true, "arr": [], "dic":{"key":"value"}}</textarea>
-    </div>
-    <div class="right">
-      <textarea id="output" readonly></textarea>
-    </div>
-  </div>
-  <script>
-    function showRightClickMenu() {
-      console.log("123");
-      const { ipcRenderer } = require('electron')
-      ipcRenderer.send('sigShowRightClickMenu');
-    }
-  </script>
+        <div class="wrap" id="wrap" oncontextmenu="showRightClickMenu()">
+            <div class="left">
+                <textarea id="input">{"name":"张三", "age":20, "bool": true, "arr": [], "student":{"name":"张三", "age": "18"}}</textarea>
+            </div>
+            <div class="right">
+                <textarea id="output" readonly></textarea>
+            </div>
+        </div>
+        <script>
+            function showRightClickMenu() {
+                console.log("123");
+                const {ipcRenderer} = require('electron')
+                ipcRenderer.send('sigShowRightClickMenu');
+            }
+        </script>
 
+        <script>
 
+            var input = document.getElementById("input");
+            var output = document.getElementById("output");
+            var dicArr = [];
 
+            input.addEventListener('input', function (e) {
+                dicArr = [];
+                // 解析
+                try {
+                    var obj = JSON.parse(input.value)
+                    result = conver(obj);
+                } catch (e) {
+                    console.log(e)
+                }
+                // 组合
+                collect(result);
+            });
 
-  <script>
+            function conver(obj) {
 
-    var input = document.getElementById("input");
-    var output = document.getElementById("output");
+                var result = "";
 
-    input.addEventListener('input', function () {
-      conver();
-    });
+                Object.keys(obj).forEach(function (key) {
 
-    function conver() {
+                    var type = Object.prototype.toString.call(obj[key]);
 
-      var obj = JSON.parse(input.value);
-      var dicArr = [];
-      var result = "";
+                    switch (type) {
+                        case '[object String]': {
+                            var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
+                            result += temp;
+                            break;
+                        }
 
-      Object.keys(obj).forEach(function (key) {
+                        case '[object Number]': {
+                            var temp = "@property (strong, nonatomic) NSNumber *" + key + ";" + "\n";
+                            result += temp;
+                            break;
+                        }
 
-        var type = Object.prototype.toString.call(obj[key]);
+                        case '[object Boolean]': {
+                            var temp = "@property (assign, nonatomic) BOOL " + key + ";" + "\n";
+                            result += temp;
+                            break;
+                        }
 
-        switch (type) {
-          case '[object String]': {
-            console.log("string");
-            var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
-            result += temp;
-            break;
-          }
+                        case '[object Array]': {
+                            var temp = "@property (strong, nonatomic) NSArray *" + key + ";" + "\n";
+                            result += temp;
+                            break;
+                        }
 
-          case '[object Number]': {
-            console.log("number");
-            var temp = "@property (strong, nonatomic) NSNumber *" + key + ";" + "\n";
-            result += temp;
-            break;
-          }
+                        case '[object Object]': {
+                            // 首先拼接带对象类型的json
+                            var cls = first_word_uppercase(key);
+                            var temp = "@property (strong, nonatomic) " + cls + " *" + key + ";" + "\n";
+                            result += temp;
+                            var clsDic = {};
+                            clsDic[cls] = conver(obj[key]);
+                            dicArr.push(clsDic);
+                            break;
+                        }
 
-          case '[object Boolean]': {
-            console.log("bool");
-            var temp = "@property (assign, nonatomic) BOOL " + key + ";" + "\n";
-            result += temp;
-            break;
-          }
+                        case '[object Null]': {
+                            console.log("object Null");
+                            var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
+                            result += temp;
+                            break;
+                        }
 
-          case '[object Array]': {
-            console.log("array");
-            var temp = "@property (strong, nonatomic) NSArray *" + key + ";" + "\n";
-            result += temp;
-            break;
-          }
+                        default: {
 
-          case '[object Object]': {
-            console.log("object");
-            var temp = "@property (strong, nonatomic) NSDictionary *" + key + ";" + "\n";
-            result += temp;
-            dicArr.push(obj[key]);
-            break;
-          }
+                        }
+                    }
 
-          case '[object Null]': {
-            console.log("object");
-            var temp = "@property (strong, nonatomic) NSString *" + key + ";" + "\n";
-            result += temp;
-            dicArr.push(obj[key]);
-            break;
-          }
+                    for (var index in dicArr) {
+                        // 获取类名
+                        var cls = dicArr[index];
+                        console.log(cls);
+                    }
 
-          default: {
+                })
 
-          }
-        }
-      })
-      output.value = result;
-    }
+                return result;
+            }
 
-    window.onload = function () {
-      conver();
-    }
+            window.onload = function () {
+                result = conver(JSON.parse(input.value));
+                collect(result)
+            }
 
-  </script>
+            function collect(result) {
+                for (var index in dicArr) {
+                    var dic1 = dicArr[index]
+                    for (var cls in dic1) {
+                        // 构建对象字符串
+                        header = "\n@interface " + cls + " : NSObject\n";
+                        body = dic1[cls]
+                        footer = "@end\n"
 
-</body>
+                        result += header += body += footer
+
+                        //
+                        // console.log(cls);
+                        // console.log(properties);
+                    }
+                    // result += dicArr[index]
+                }
+                output.value = result;
+            }
+
+            // 首字母大写
+            function first_word_uppercase(str) {
+                var arr = str.split("");
+                var result = "";
+                for (var index in arr) {
+                    var value = arr[index];
+                    if (index == 0) {
+                        result += value.toUpperCase();
+                    } else {
+                        result += value;
+                    }
+                }
+                return result;
+            }
+
+        </script>
+
+    </body>
 
 </html>
