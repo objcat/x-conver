@@ -60,8 +60,7 @@
 
 		<div class="wrap" id="wrap" oncontextmenu="showRightClickMenu()">
 			<div class="left">
-				<textarea id="input">{"service":{"name_":"DMSGestureRecognition","service_spec_version":"1.00","service_interface":[{"interface_type":"Event","interface_description_index":"TEST.FFF1","interface_id_":"0x8001","output":[{"min_value":"","output_name":"GestureInstructions","output_description_index":"TEST.IN01","max_value":"","value_semanteme":[{"value_":"0x0","text__":"NoGesture;"},{"value_":"0x1","text__":"Victory；"},{"value_":"0x2","text__":"ThumbsUp；"},{"value_":"0x3","text__":"Hello；"},{"value_":"0x4","text__":"FingerHeart；"},{"value_":"0x5","text__":"OK；"},{"value_":"0x6","text__":"UP；"},{"value_":"0x7","text__":"Down；"},{"value_":"0x8","text__":"Left;"},{"value_":"0x9","text__":"Right"}],"output_number":"01","output_type":"Uint8"}],"interface_name":"DMSGestureInstructions"}],"service_instance_id":"3","service_id":"0xB032","version":"0x01","create_at":"TEST.NOW","service_description_index":"TEST.000A"}}
-                </textarea>
+				<textarea id="input"></textarea>
 			</div>
 			<div class="right">
 				<textarea id="output" readonly></textarea>
@@ -153,7 +152,7 @@
 
 						default:
 							{
-								console.log("键:" + key + " 对应的值是未知类型");
+								console.log("key=" + key + " 所对应的值是未知类型");
 							}
 					}
 				})
@@ -162,6 +161,7 @@
 			}
 
 			window.onload = function() {
+				input.value = '{"service":{"name_":"DMSGestureRecognition","service_spec_version":"1.00","service_interface":[{"interface_type":"Event","interface_description_index":"TEST.FFF1","interface_id_":"0x8001","output":[{"min_value":"","output_name":"GestureInstructions","output_description_index":"TEST.IN01","max_value":"","value_semanteme":[{"value_":"0x0","text__":"NoGesture;"},{"value_":"0x1","text__":"Victory；"},{"value_":"0x2","text__":"ThumbsUp；"},{"value_":"0x3","text__":"Hello；"},{"value_":"0x4","text__":"FingerHeart；"},{"value_":"0x5","text__":"OK；"},{"value_":"0x6","text__":"UP；"},{"value_":"0x7","text__":"Down；"},{"value_":"0x8","text__":"Left;"},{"value_":"0x9","text__":"Right"}],"output_number":"01","output_type":"Uint8"}],"interface_name":"DMSGestureInstructions"}],"service_instance_id":"3","service_id":"0xB032","version":"0x01","create_at":"TEST.NOW","service_description_index":"TEST.000A"}}';
 				result = conver(JSON.parse(input.value));
 				collect(result)
 			}
