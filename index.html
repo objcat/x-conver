@@ -60,7 +60,8 @@
 
         <div class="wrap" id="wrap" oncontextmenu="showRightClickMenu()">
             <div class="left">
-                <textarea id="input">{"name":"张三", "age":20, "bool": true, "arr": [], "student":{"name":"张三", "age": "18"}}</textarea>
+                <textarea id="input">{"service":{"name_":"DMSGestureRecognition","service_spec_version":"1.00","service_interface":[{"interface_type":"Event","interface_description_index":"TEST.FFF1","interface_id_":"0x8001","output":[{"min_value":"","output_name":"GestureInstructions","output_description_index":"TEST.IN01","max_value":"","value_semanteme":[{"value_":"0x0","text__":"NoGesture;"},{"value_":"0x1","text__":"Victory；"},{"value_":"0x2","text__":"ThumbsUp；"},{"value_":"0x3","text__":"Hello；"},{"value_":"0x4","text__":"FingerHeart；"},{"value_":"0x5","text__":"OK；"},{"value_":"0x6","text__":"UP；"},{"value_":"0x7","text__":"Down；"},{"value_":"0x8","text__":"Left;"},{"value_":"0x9","text__":"Right"}],"output_number":"01","output_type":"Uint8"}],"interface_name":"DMSGestureInstructions"}],"service_instance_id":"3","service_id":"0xB032","version":"0x01","create_at":"TEST.NOW","service_description_index":"TEST.000A"}}
+                </textarea>
             </div>
             <div class="right">
                 <textarea id="output" readonly></textarea>
@@ -123,6 +124,10 @@
                         case '[object Array]': {
                             var temp = "@property (strong, nonatomic) NSArray *" + key + ";" + "\n";
                             result += temp;
+                            var arr = obj[key];
+                            if (arr.length > 0) {
+                                analyticalObj(key, arr[0]);
+                            }
                             break;
                         }
 
@@ -131,9 +136,7 @@
                             var cls = first_word_uppercase(key);
                             var temp = "@property (strong, nonatomic) " + cls + " *" + key + ";" + "\n";
                             result += temp;
-                            var clsDic = {};
-                            clsDic[cls] = conver(obj[key]);
-                            dicArr.push(clsDic);
+                            analyticalObj(key, obj[key])
                             break;
                         }
 
@@ -148,13 +151,6 @@
 
                         }
                     }
-
-                    for (var index in dicArr) {
-                        // 获取类名
-                        var cls = dicArr[index];
-                        console.log(cls);
-                    }
-
                 })
 
                 return result;
@@ -166,6 +162,7 @@
             }
 
             function collect(result) {
+                dicArr = dicArr.reverse()
                 for (var index in dicArr) {
                     var dic1 = dicArr[index]
                     for (var cls in dic1) {
@@ -179,19 +176,38 @@
                 output.value = result;
             }
 
+            function analyticalObj(key, obj) {
+                var cls = first_word_uppercase(key);
+                var clsDic = {};
+                clsDic[cls] = conver(obj);
+                dicArr.push(clsDic);
+            }
+
             // 首字母大写
             function first_word_uppercase(str) {
-                var arr = str.split("");
                 var result = "";
-                for (var index in arr) {
-                    var value = arr[index];
-                    if (index == 0) {
-                        result += value.toUpperCase();
-                    } else {
-                        result += value;
+                if (str.indexOf("_") != -1) {
+                    var arr = str.split("_");
+                    if (arr.length == 2) {
+                       var first = first_word_uppercase(arr[0]);
+                       var last = first_word_uppercase(arr[1]);
+                       result += first += last;
+                       return result;
                     }
+                    return str;
+                } else {
+                    var arr = str.split("");
+
+                    for (var index in arr) {
+                        var value = arr[index];
+                        if (index == 0) {
+                            result += value.toUpperCase();
+                        } else {
+                            result += value;
+                        }
+                    }
+                    return result;
                 }
-                return result;
             }
 
         </script>
